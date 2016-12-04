@@ -7,7 +7,7 @@ machine:
     - sudo tar -C /usr/local -xzf $GODIST
 
 dependencies:
-  pre:
+  override:
     - go get github.com/rancher/trash
     - trash -k
   cache_directories:
