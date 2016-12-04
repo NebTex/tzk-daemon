@@ -72,3 +72,5 @@ _testmain.go
 tzn.toml
 .logs
 tzn-facts
+vendor/
+.idea/

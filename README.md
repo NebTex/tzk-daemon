@@ -7,3 +7,6 @@ Continuously push node information to consul instance
  - Check if the node is a bare-metal or lxc container
  - Tinc public key of the node
 
+### Vendoring 
+
+trash was used  https://github.com/rancher/trash
