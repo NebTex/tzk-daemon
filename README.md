@@ -6,10 +6,10 @@ Small tool for coordinate mesh vpns (initially tinc) using consul as backend
  
  1. Continuously push node information to the consul backend
  
- - Interfaces ip
- - Geo-ip info (thanks to https://freegeoip.net)
- - Check if the node is a bare-metal or lxc container
- - Tinc public key of the node
+     - Interfaces ip
+     - Geo-ip info (thanks to https://freegeoip.net)
+     - Check if the node is a bare-metal or lxc container
+     - Tinc public key of the node
  
  2. Automatically assign an ip to the node 
  
