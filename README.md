@@ -13,10 +13,10 @@ Small tool for coordinate mesh vpns (initially tinc) using consul as backend
  
  2. Automatically assign an ip to the node, if there is a subnet change aquatically reassign a new ip to the node
  
- 3. maintain updated the `/etc/hosts` file, with a entry for each node, 
+ 3. Maintain updated the `/etc/hosts` file, with a entry for each node, 
  with its respective vpn address 
  
- 4. write and maintain updated the tinc files, `tinc.conf`, `tinc-down`, `tinc-up` and the hosts files
+ 4. Write and maintain updated the tinc files, `tinc.conf`, `tinc-down`, `tinc-up` and the hosts files
  
 ### Vendoring 
 
