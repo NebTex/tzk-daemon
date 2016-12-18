@@ -1,0 +1,6 @@
+[Vpn]
+Name = "tinc"
+
+[Consul]
+Url = "http://consul.example:8500"
+ACLToken = "asdasdfasdfasdfasdfasdfasdfasdfasdfasdf"

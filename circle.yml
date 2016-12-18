@@ -1,0 +1,69 @@
+machine:
+  environment:
+    PROJECT_GOPATH: "${HOME}/.go_project"
+    PROJECT_PARENT_PATH: "${PROJECT_GOPATH}/src/github.com/${CIRCLE_PROJECT_USERNAME}"
+    PROJECT_PATH: "${PROJECT_PARENT_PATH}/${CIRCLE_PROJECT_REPONAME}"
+    GOPATH: "${HOME}/.go_workspace:/usr/local/go_workspace:${PROJECT_GOPATH}"
+    GODIST: "go1.7.3.linux-amd64.tar.gz"
+  post:
+    - curl -o $GODIST https://storage.googleapis.com/golang/$GODIST
+    - sudo rm -rf /usr/local/go
+    - sudo tar -C /usr/local -xzf $GODIST
+    - sudo apt-get update -y
+    - sudo apt-get install unzip -y
+    - wget https://releases.hashicorp.com/consul/0.7.1/consul_0.7.1_linux_amd64.zip
+    - unzip consul_0.7.1_linux_amd64.zip
+    - ./consul agent -data-dir=/tmp -advertise=127.0.0.1 -server -bootstrap data-dir=/tmp/consul -ui -node=master1 -client=0.0.0.0:
+          background: true
+    - sleep 5
+
+dependencies:
+  pre:
+    - go get github.com/rancher/trash
+    - go get github.com/BurntSushi/toml
+    - go get github.com/urfave/cli
+    - go get github.com/Sirupsen/logrus
+    - go get github.com/BurntSushi/toml
+    - go get github.com/Sirupsen/logrus
+    - go get github.com/criloz/goblin
+    - go get -u github.com/davecgh/go-spew/spew
+    - go get github.com/pmezard/go-difflib/difflib
+    - go get github.com/stretchr/testify
+    - go get github.com/urfave/cli
+    - go get -u golang.org/x/sys/unix
+    - go get -u golang.org/x/sys/windows
+    - go get -u github.com/alecthomas/gometalinter
+    - go get github.com/mitchellh/consulstructure
+    - go get github.com/hashicorp/consul/api
+    - gometalinter --install
+    - go get github.com/satori/go.uuid
+    - go get github.com/modocache/gover
+  override:
+    - mkdir -p "${PROJECT_PARENT_PATH}"
+    - rsync -avC "${HOME}/${CIRCLE_PROJECT_REPONAME}/" "${PROJECT_PATH}"
+
+test:
+  override:
+    - go test -coverprofile=profile.out -covermode=atomic
+    - "gometalinter --disable-all --enable=dupl --enable=errcheck
+      --enable=goconst --enable=golint --enable=gosimple --enable=ineffassign
+      --enable=interfacer --enable=misspell --enable=staticcheck
+      --enable=structcheck --enable=gocyclo
+      --enable=unused --enable=vet --enable=vetshadow --enable=lll
+      --line-length=80 --deadline=60s --vendor --dupl-threshold=100 ./..."
+    # Collect coverage reports
+    - cat profile.out >> coverage.txt
+    - rm profile.out
+  post:
+    - bash <(curl -s https://codecov.io/bash)
+
+deployment:
+  release:
+    branch: master
+    commands:
+    - go get github.com/mitchellh/gox
+    - go get github.com/tcnksm/ghr
+    - "gox -parallel=1 -os=\"linux  windows\" -arch=\"amd64 arm arm64\" -ldflags
+    \"-X main.Version=$BUILD_VERSION
+    -X main.BuildDate=$BUILD_DATE\" -output \"dist/tnzd_{{.OS}}_{{.Arch}}\""
+    - "ghr -u NebTex -replace v0.1.0 dist/"
