@@ -28,12 +28,10 @@ func (hs Hosts) manageHostBlock(input string) string {
 %s
 #/tzn/NoEdit`, input, hs.parseToFileFormat())
 
-	} else {
-		return re.ReplaceAllString(input, fmt.Sprintf(`#/tzn/NoEdit
+	}
+	return re.ReplaceAllString(input, fmt.Sprintf(`#/tzn/NoEdit
 %s
 #/tzn/NoEdit`, hs.parseToFileFormat()))
-	}
-
 }
 
 func (hs Hosts) parseToFileFormat() string {
