@@ -6,6 +6,7 @@ import (
 	"github.com/hashicorp/consul/api"
 	"math/rand"
 	"net"
+	"runtime"
 	"time"
 )
 
@@ -52,11 +53,14 @@ func currentIP(client *api.Client, c Config, hostname string) *string {
 	}
 	return nil
 }
-func checkFatal(err error) {
-
-	if err != nil {
-		log.Fatal(err)
+func checkFatal(e error) {
+	_, file, line, _ := runtime.Caller(1)
+	if e != nil {
+		log.WithFields(log.Fields{"file": file,
+			"line": line,
+		}).Fatal(e)
 	}
+
 }
 
 func assignIP(client *api.Client, c Config, hostname string) string {

@@ -60,6 +60,7 @@ func TestDHCP(t *testing.T) {
 
 	g.Describe("DHCP", func() {
 		g.It("Should pick an ip from the subnet", func() {
+			g.Timeout(60 * time.Second)
 			subnets := []string{
 				"10.65.0.0/16",
 				"169.247.0.0/16",
@@ -72,10 +73,14 @@ func TestDHCP(t *testing.T) {
 				hKey := fmt.Sprintf("%s/Hosts/%s/VpnAddress", c.Vpn.Name, hostname)
 				hkv, _, err := client.KV().Get(hKey, nil)
 				checkFail(g, err)
+
+				assert.NotNil(g, hkv)
+
 				vKey := fmt.Sprintf("%s/TakenAddresses/%s",
 					c.Vpn.Name, string(hkv.Value))
 				vkv, _, err := client.KV().Get(vKey, nil)
 				checkFail(g, err)
+				assert.NotNil(g, vkv)
 				assert.Equal(g, string(vkv.Value), hostname)
 				_, ipNet, err := net.ParseCIDR(subnet)
 				checkFail(g, err)
@@ -84,8 +89,10 @@ func TestDHCP(t *testing.T) {
 		})
 
 		g.It("Should preserve the ip", func() {
+			g.Timeout(60 * time.Second)
 			subnet := "10.65.1.0/24"
 			bootstrapConsul(subnet, c.Vpn.Name, c)
+			assert.Equal(g, DHCP(c, "node1"), DHCP(c, "node1"))
 			assert.Equal(g, DHCP(c, "node1"), DHCP(c, "node1"))
 
 		})
