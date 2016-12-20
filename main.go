@@ -50,8 +50,12 @@ func mainLoop(c Config, h Host) {
 }
 func handleConsulChange(c Config, h Host) {
 	var oldFiles *Files
+	var subnet string
 	go WatchConsul(c, func(v *Vpn, close func()) {
-		DHCP(c, h.Facts.Hostname)
+		if subnet != v.Subnet {
+			DHCP(c, h.Facts.Hostname)
+			subnet = v.Subnet
+		}
 		v.SetHostFile()
 		files := v.GenerateFiles(h.Facts.Hostname)
 		if !files.Equal(oldFiles) {
@@ -59,7 +63,7 @@ func handleConsulChange(c Config, h Host) {
 			oldFiles = files
 			unit := "tinc"
 			_, err := exec.Command("/bin/systemctl", "restart", unit).Output()
-			checkFatal(err)
+			log.Error(err)
 		}
 	})
 }
