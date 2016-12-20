@@ -84,8 +84,9 @@ func WatchConsul(c Config, f func(v *Vpn, close func())) {
 	closeCh := make(chan bool, 1)
 	updateCh := make(chan interface{})
 	errCh := make(chan error)
-	ac := &api.Config{Address: c.Consul.Address, Scheme: c.Consul.Scheme, Token: c.Consul.Token}
-
+	ac := &api.Config{Address: c.Consul.Address,
+		Scheme: c.Consul.Scheme,
+		Token:  c.Consul.Token}
 	decoder := &consulstructure.Decoder{
 		Target:   &Vpn{},
 		Consul:   ac,
