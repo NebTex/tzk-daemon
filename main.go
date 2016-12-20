@@ -58,7 +58,7 @@ func handleConsulChange(c Config, h Host) {
 		if !files.Equal(oldFiles) {
 			files.Write(c)
 			oldFiles = files
-			unit := fmt.Sprintf("tinc-%s", c.Vpn.Name)
+			unit := "tinc"
 			_, err := exec.Command("/bin/systemctl", "restart", unit).Output()
 			checkFatal(err)
 		}
