@@ -61,13 +61,14 @@ type Files struct {
 //GenerateFiles create the tinc conf files,
 // and host files from the Vpn struct
 func (v *Vpn) GenerateFiles(thisHostname string) *Files {
+	log.Infof("Generating files for %s", thisHostname)
 	f := &Files{}
 	f.Hosts = make(map[string]string)
 	f.Tinc = make(map[string]string)
 
 	th, ok := v.Hosts[thisHostname]
 	if !ok {
-		log.Error("This host is not defined on consul")
+		log.Fatal("This host is not defined on consul")
 		return nil
 	}
 
