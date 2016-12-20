@@ -7,10 +7,10 @@ import "net"
 //interface
 func (f *Facts) GetLocalAddresses() {
 	//var ra []string
-	addrs, err := net.InterfaceAddrs()
-	if err != nil {
-	}
-	for _, addr := range addrs {
-		f.AddAddress(strings.Split(addr.String(), "/")[0])
+	addresses, err := net.InterfaceAddrs()
+	checkFatal(err)
+
+	for _, address := range addresses {
+		f.AddAddress(strings.Split(address.String(), "/")[0])
 	}
 }

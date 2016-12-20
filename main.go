@@ -17,11 +17,12 @@ func init() {
 }
 
 func initiate(c Config) Host {
+	initSubnet(c)
 	h := Host{}
 	h.Facts.GetContainerStatus()
 	h.Facts.GetLocalAddresses()
 	h.Facts.GetGeoIP()
-	h.Facts.GetTincInfo(c)
+	h.Facts.GetTincInfo(c, os.Hostname)
 	h.Facts.SendToConsul(c)
 	h.SetConfigConsul(c)
 	DHCP(c, h.Facts.Hostname)
@@ -39,7 +40,7 @@ func mainLoop(c Config, h Host) {
 		if geoIPLimiter == 0 {
 			h.Facts.GetGeoIP()
 		}
-		h.Facts.GetTincInfo(c)
+		h.Facts.GetTincInfo(c, os.Hostname)
 		h.Facts.SendToConsul(c)
 		geoIPLimiter++
 		if geoIPLimiter > 1440 {
@@ -72,13 +73,13 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "conf-dir",
-			Value: "/etc/tzn",
+			Value: "/etc/tzk",
 			Usage: "config directory",
 		},
 	}
 
 	app.Action = func(c *cli.Context) error {
-		configFile := filepath.Join(c.String("conf-dir"), "tzn.toml")
+		configFile := filepath.Join(c.String("conf-dir"), "tzk.toml")
 		data, err := ioutil.ReadFile(configFile)
 		if err != nil {
 			log.Fatal(err)

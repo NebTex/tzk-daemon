@@ -9,6 +9,9 @@ import (
 	"time"
 )
 
+//DefaultSubnet the default cidr of the vpn
+const DefaultSubnet = "169.254.0.0/16"
+
 func inc(ip net.IP) {
 	for j := len(ip) - 1; j >= 0; j-- {
 		ip[j]++
@@ -155,5 +158,19 @@ func DHCP(c Config, hostname string) string {
 
 	log.Infof("The ip address %s have been assigned to this node", address)
 	return address
+
+}
+
+func initSubnet(c Config) {
+	client := getConsulClient(c)
+	kv, _, err := client.KV().Get(fmt.Sprintf("%s/Subnet", c.Vpn.Name), nil)
+	checkFatal(err)
+	if kv == nil {
+		kv = &api.KVPair{Key: fmt.Sprintf("%s/Subnet", c.Vpn.Name),
+			Value: []byte(DefaultSubnet)}
+		_, err = client.KV().Put(kv, nil)
+		checkFatal(err)
+
+	}
 
 }

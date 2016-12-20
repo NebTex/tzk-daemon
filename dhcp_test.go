@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/consul/api"
 	"github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"net"
 	"strings"
 	"testing"
@@ -27,13 +28,16 @@ func bootstrapConsul(subnet string, vpnName string, c Config) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	c.Vpn.PublicKeyFile = "/tmp/pubkey"
+	err = ioutil.WriteFile(c.Vpn.PublicKeyFile, []byte("pubkey"), 0755)
+
+	checkFatal(err)
 
 	f := Facts{}
 	f.GetContainerStatus()
 	f.GetLocalAddresses()
 	f.GetGeoIP()
-	f.PublicKey = "pubkey"
-	f.Hostname = "node1"
+	f.GetTincInfo(c, func() (string, error) { return "node1", nil })
 	f.SendToConsul(c)
 	h := Host{Facts: f}
 	h.SetConfigConsul(c)
@@ -51,7 +55,7 @@ func TestDHCP(t *testing.T) {
 	c := Config{}
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
-	c.Vpn.Name = "tzn"
+	c.Vpn.Name = "tzk"
 	client := getConsulClient(c)
 
 	g.Describe("DHCP", func() {
@@ -134,7 +138,7 @@ func TestDHCPChangeSubnet(t *testing.T) {
 	c := Config{}
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
-	c.Vpn.Name = "tzn"
+	c.Vpn.Name = "tzk"
 	client := getConsulClient(c)
 
 	g.Describe("DHCP", func() {
@@ -150,21 +154,61 @@ func TestDHCPChangeSubnet(t *testing.T) {
 			newIP1 := DHCP(c, "node1")
 			assert.True(g, ipNet1.Contains(net.ParseIP(newIP1)))
 			_, err = client.KV().
-				Put(&api.KVPair{Key: "tzn/Subnet", Value: []byte(subnet2)}, nil)
+				Put(&api.KVPair{Key: "tzk/Subnet", Value: []byte(subnet2)}, nil)
 			checkFail(g, err)
 			DHCP(c, "node1")
 			newIP2 := DHCP(c, "node1")
 			assert.NotEqual(g, newIP2, newIP1)
 			assert.True(g, ipNet2.Contains(net.ParseIP(newIP2)))
 			kv, _, err := client.KV().
-				Get(fmt.Sprintf("tzn/TakenAddresses/%s", newIP1), nil)
+				Get(fmt.Sprintf("tzk/TakenAddresses/%s", newIP1), nil)
 			checkFail(g, err)
 			assert.Nil(g, kv)
 			kv, _, err = client.KV().
-				Get(fmt.Sprintf("tzn/TakenAddresses/%s", newIP2), nil)
+				Get(fmt.Sprintf("tzk/TakenAddresses/%s", newIP2), nil)
 			checkFail(g, err)
 			assert.NotNil(g, kv)
 
+		})
+
+	})
+
+}
+
+func TestInitSubnet(t *testing.T) {
+	g := goblin.Goblin(t)
+	c := Config{}
+	c.Consul.Address = "localhost:8500"
+	c.Consul.Scheme = "http"
+	c.Vpn.Name = "tzk"
+	client := getConsulClient(c)
+
+	g.Describe("initSubnet", func() {
+		g.It("Should assing the default subnet", func() {
+			_, err := client.KV().DeleteTree(c.Vpn.Name, nil)
+			if err != nil {
+				log.Fatal(err)
+			}
+			initSubnet(c)
+			kv, _, err := client.KV().Get(fmt.Sprintf("%s/Subnet", c.Vpn.Name), nil)
+			checkFail(g, err)
+			assert.NotNil(g, kv)
+			assert.Equal(g, string(kv.Value), DefaultSubnet)
+		})
+
+		g.It("Should not change subnet if already exist", func() {
+			_, err := client.KV().DeleteTree(c.Vpn.Name, nil)
+			if err != nil {
+				log.Fatal(err)
+			}
+			kv := &api.KVPair{Key: fmt.Sprintf("%s/Subnet", c.Vpn.Name),
+				Value: []byte("10.1.0.0/16")}
+			_, err = client.KV().Put(kv, nil)
+			checkFail(g, err)
+			initSubnet(c)
+			kv, _, err = client.KV().Get(fmt.Sprintf("%s/Subnet", c.Vpn.Name), nil)
+			checkFail(g, err)
+			assert.NotEqual(g, string(kv.Value), DefaultSubnet)
 		})
 
 	})

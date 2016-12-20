@@ -12,7 +12,7 @@ func TestHost_SetConfigConsul(t *testing.T) {
 	c := Config{}
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
-	c.Vpn.Name = "tzn"
+	c.Vpn.Name = "tzk"
 	client := getConsulClient(c)
 
 	g.Describe("DHCP", func() {
@@ -21,7 +21,7 @@ func TestHost_SetConfigConsul(t *testing.T) {
 			h := Host{}
 			h.Facts.Hostname = "node1"
 			h.SetConfigConsul(c)
-			kvs, _, err := client.KV().List("tzn/Hosts/node1/Configs", nil)
+			kvs, _, err := client.KV().List("tzk/Hosts/node1/Configs", nil)
 			checkFail(g, err)
 			assert.Equal(g, len(kvs), 6)
 		})
@@ -31,10 +31,10 @@ func TestHost_SetConfigConsul(t *testing.T) {
 			h := Host{}
 			h.Facts.Hostname = "node1"
 			h.SetConfigConsul(c)
-			_, err := client.KV().Delete("tzn/Hosts/node1/Configs/Mode", nil)
+			_, err := client.KV().Delete("tzk/Hosts/node1/Configs/Mode", nil)
 			checkFatal(err)
 			h.SetConfigConsul(c)
-			kvs, _, err := client.KV().List("tzn/Hosts/node1/Configs", nil)
+			kvs, _, err := client.KV().List("tzk/Hosts/node1/Configs", nil)
 			checkFail(g, err)
 			assert.Equal(g, len(kvs), 5)
 		})

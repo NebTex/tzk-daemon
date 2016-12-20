@@ -34,7 +34,7 @@ func getConsulClient(c Config) *api.Client {
 
 func (f *Facts) addKey(k string, v interface{}) *api.KVTxnOp {
 	return &api.KVTxnOp{Verb: "set",
-		Key:   fmt.Sprintf("tzn/Hosts/%s/Facts/%s", f.Hostname, k),
+		Key:   fmt.Sprintf("tzk/Hosts/%s/Facts/%s", f.Hostname, k),
 		Value: toByte(v)}
 }
 

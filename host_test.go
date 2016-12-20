@@ -13,16 +13,16 @@ func TestParseToFileFormat(t *testing.T) {
 	c := Config{}
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
-	c.Vpn.Name = "tzn"
+	c.Vpn.Name = "tzk"
 	g.Describe("ParseToFileFormat", func() {
 		g.It("should insert all the nodes in the host file",
 			func(done goblin.Done) {
 				handle := func(v *Vpn, close func()) {
 					o := v.Hosts.parseToFileFormat()
-					assert.True(g, strings.Contains(o, "node3.tzn.local"))
-					assert.True(g, strings.Contains(o, "node4.tzn.local"))
-					assert.True(g, strings.Contains(o, "node1.tzn.local"))
-					assert.True(g, strings.Contains(o, "node2.tzn.local"))
+					assert.True(g, strings.Contains(o, "node3.tzk.local"))
+					assert.True(g, strings.Contains(o, "node4.tzk.local"))
+					assert.True(g, strings.Contains(o, "node1.tzk.local"))
+					assert.True(g, strings.Contains(o, "node2.tzk.local"))
 					close()
 					done()
 				}
@@ -45,30 +45,30 @@ func TestManageHostBlock(t *testing.T) {
 	c := Config{}
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
-	c.Vpn.Name = "tzn"
+	c.Vpn.Name = "tzk"
 	g.Describe("ParseToFileFormat", func() {
 		g.It("should insert or remplace the block in the host file",
 			func(done goblin.Done) {
 				handle := func(v *Vpn, close func()) {
 					o := v.Hosts.manageHostBlock("")
-					assert.True(g, strings.Contains(o, "node3.tzn.local"))
-					assert.True(g, strings.Contains(o, "node4.tzn.local"))
-					assert.True(g, strings.Contains(o, "node1.tzn.local"))
-					assert.True(g, strings.Contains(o, "node2.tzn.local"))
+					assert.True(g, strings.Contains(o, "node3.tzk.local"))
+					assert.True(g, strings.Contains(o, "node4.tzk.local"))
+					assert.True(g, strings.Contains(o, "node1.tzk.local"))
+					assert.True(g, strings.Contains(o, "node2.tzk.local"))
 
 					o = v.Hosts.manageHostBlock(`127.0.0.1 localhost
-#/tzn/NoEdit
-                    10.65.1.23	node20.tzn.local
-                    10.65.1.206	node30.tzn.local
-                    10.65.1.248	node40.tzn.local
-                    #/tzn/NoEdit`)
-					assert.True(g, strings.Contains(o, "node3.tzn.local"))
-					assert.True(g, strings.Contains(o, "node4.tzn.local"))
-					assert.True(g, strings.Contains(o, "node1.tzn.local"))
-					assert.True(g, strings.Contains(o, "node2.tzn.local"))
-					assert.False(g, strings.Contains(o, "node20.tzn.local"))
-					assert.False(g, strings.Contains(o, "node30.tzn.local"))
-					assert.False(g, strings.Contains(o, "node40.tzn.local"))
+#/tzk/NoEdit
+                    10.65.1.23	node20.tzk.local
+                    10.65.1.206	node30.tzk.local
+                    10.65.1.248	node40.tzk.local
+                    #/tzk/NoEdit`)
+					assert.True(g, strings.Contains(o, "node3.tzk.local"))
+					assert.True(g, strings.Contains(o, "node4.tzk.local"))
+					assert.True(g, strings.Contains(o, "node1.tzk.local"))
+					assert.True(g, strings.Contains(o, "node2.tzk.local"))
+					assert.False(g, strings.Contains(o, "node20.tzk.local"))
+					assert.False(g, strings.Contains(o, "node30.tzk.local"))
+					assert.False(g, strings.Contains(o, "node40.tzk.local"))
 
 					close()
 					done()

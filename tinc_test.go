@@ -33,7 +33,7 @@ func TestGenerateFiles(t *testing.T) {
 	c := Config{}
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
-	c.Vpn.Name = "tzn"
+	c.Vpn.Name = "tzk"
 
 	g.Describe("GenerateFiles", func() {
 		g.It("Should generate the files need to run tinc", func(done goblin.Done) {
@@ -85,7 +85,7 @@ func TestCompareFiles(t *testing.T) {
 	c := Config{}
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
-	c.Vpn.Name = "tzn"
+	c.Vpn.Name = "tzk"
 
 	client := getConsulClient(c)
 
@@ -139,7 +139,7 @@ func TestCompareFiles(t *testing.T) {
 			go WatchConsul(c, handle)
 			time.Sleep(1 * time.Second)
 			_, err := client.KV().
-				Put(&api.KVPair{Key: "tzn/Subnet", Value: []byte("10.1.0.0/16")}, nil)
+				Put(&api.KVPair{Key: "tzk/Subnet", Value: []byte("10.1.0.0/16")}, nil)
 			checkFail(g, err)
 			time.Sleep(1 * time.Second)
 			addHost(c, "node5", "pubkey5", "95.36.25.14")

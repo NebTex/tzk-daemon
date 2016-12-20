@@ -14,7 +14,7 @@ func TestWatchConsul(t *testing.T) {
 	c := Config{}
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
-	c.Vpn.Name = "tzn"
+	c.Vpn.Name = "tzk"
 	client := getConsulClient(c)
 
 	g.Describe("WatchConsul", func() {
@@ -37,14 +37,14 @@ func TestWatchConsul(t *testing.T) {
 				go WatchConsul(c, handle)
 				time.Sleep(1 * time.Second)
 				_, err := client.KV().
-					Put(&api.KVPair{Key: "tzn/Subnet",
+					Put(&api.KVPair{Key: "tzk/Subnet",
 						Value: []byte("10.100.0.0/16")}, nil)
 				if err != nil {
 					g.Fail(err)
 				}
 				time.Sleep(1 * time.Second)
 				_, err = client.KV().
-					Put(&api.KVPair{Key: "tzn/Subnet",
+					Put(&api.KVPair{Key: "tzk/Subnet",
 						Value: []byte("10.70.0.0/16")}, nil)
 				if err != nil {
 					g.Fail(err)

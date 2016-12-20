@@ -1,6 +1,6 @@
-## tzn-daemon
+## tzk-daemon
 
-[![CircleCI](https://circleci.com/gh/NebTex/tzn-daemon.svg?style=svg)](https://circleci.com/gh/NebTex/tzn-facts) [![Go Report Card](https://goreportcard.com/badge/github.com/NebTex/tzn-daemon)](https://goreportcard.com/report/github.com/NebTex/tzn-daemon) [![codecov](https://codecov.io/gh/NebTex/tzn-daemon/branch/master/graph/badge.svg)](https://codecov.io/gh/NebTex/tzn-daemon)
+[![CircleCI](https://circleci.com/gh/NebTex/tzk-daemon.svg?style=svg)](https://circleci.com/gh/NebTex/tzk-daemon) [![Go Report Card](https://goreportcard.com/badge/github.com/NebTex/tzk-daemon)](https://goreportcard.com/report/github.com/NebTex/tzk-daemon) [![codecov](https://codecov.io/gh/NebTex/tzk-daemon/branch/master/graph/badge.svg)](https://codecov.io/gh/NebTex/tzk-daemon)
 
 Small tool for coordinate mesh vpns (initially tinc) using consul as backend
  

@@ -20,25 +20,25 @@ func (v *Vpn) SetHostFile() {
 }
 
 func (hs Hosts) manageHostBlock(input string) string {
-	re := regexp.MustCompile(`(?ms)#\/tzn\/NoEdit(.)*#\/tzn\/NoEdit`)
+	re := regexp.MustCompile(`(?ms)#\/tzk\/NoEdit(.)*#\/tzk\/NoEdit`)
 	all := re.FindAllString(input, -1)
 	if len(all) == 0 {
 		return fmt.Sprintf(`%s
-#/tzn/NoEdit
+#/tzk/NoEdit
 %s
-#/tzn/NoEdit`, input, hs.parseToFileFormat())
+#/tzk/NoEdit`, input, hs.parseToFileFormat())
 
 	}
-	return re.ReplaceAllString(input, fmt.Sprintf(`#/tzn/NoEdit
+	return re.ReplaceAllString(input, fmt.Sprintf(`#/tzk/NoEdit
 %s
-#/tzn/NoEdit`, hs.parseToFileFormat()))
+#/tzk/NoEdit`, hs.parseToFileFormat()))
 }
 
 func (hs Hosts) parseToFileFormat() string {
 	hFile := make([]string, len(hs))
 	for _, h := range hs {
 		entry := fmt.Sprintf("%s\t%s.%s.local",
-			h.VpnAddress, h.Facts.Hostname, "tzn")
+			h.VpnAddress, h.Facts.Hostname, "tzk")
 		hFile = append(hFile, entry)
 	}
 	return strings.Join(hFile, "\n")

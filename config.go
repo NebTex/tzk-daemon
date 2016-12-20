@@ -8,7 +8,7 @@ import (
 
 func (h *Host) addConfig(tx api.KVTxnOps, key string,
 	value string) api.KVTxnOps {
-	k := fmt.Sprintf("tzn/Hosts/%s/Configs/%s", h.Facts.Hostname, key)
+	k := fmt.Sprintf("tzk/Hosts/%s/Configs/%s", h.Facts.Hostname, key)
 	kvtx := &api.KVTxnOp{Key: k, Value: []byte(value), Verb: "set"}
 	return append(tx, kvtx)
 }
@@ -16,7 +16,8 @@ func (h *Host) addConfig(tx api.KVTxnOps, key string,
 //Config store the config info
 type Config struct {
 	Vpn struct {
-		Name string
+		Name          string
+		PublicKeyFile string
 	}
 	Consul struct {
 		Address string
