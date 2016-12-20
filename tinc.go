@@ -105,9 +105,6 @@ ip link set $INTERFACE down`, v.Subnet, th.VpnAddress)
 	for _, host := range v.Hosts {
 
 		hostFile := []string{}
-		if host.Facts.Hostname == thisHostname {
-			continue
-		}
 		hostFile = append(hostFile,
 			fmt.Sprintf("Ed25519PublicKey=%s", host.Facts.PublicKey))
 		for address := range host.Facts.Addresses {
