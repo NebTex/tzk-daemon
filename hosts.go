@@ -43,3 +43,8 @@ func (hs Hosts) parseToFileFormat() string {
 	}
 	return strings.Join(hFile, "\n")
 }
+
+func fixName(s string) string {
+	re := regexp.MustCompile(`[^A-Za-z0-9_]`)
+	return re.ReplaceAllString(s, "_")
+}

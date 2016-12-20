@@ -86,3 +86,15 @@ func TestManageHostBlock(t *testing.T) {
 
 	})
 }
+
+//TestFixName
+func TestFixName(t *testing.T) {
+	g := goblin.Goblin(t)
+	g.Describe("fixName", func() {
+		g.It("should replace non standard characters by _",
+			func() {
+				assert.Equal(g, fixName("ikkk?ikjkj-ljl{{"), "ikkk_ikjkj_ljl__")
+			})
+
+	})
+}

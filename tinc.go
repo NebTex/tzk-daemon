@@ -94,7 +94,7 @@ ip link set $INTERFACE down`, v.Subnet, th.VpnAddress)
 	// create tinc conf
 	for _, k := range keys {
 		if k == "Name" {
-			cFile = append(cFile, fmt.Sprintf("%s=%s", k, thisHostname))
+			cFile = append(cFile, fmt.Sprintf("%s=%s", k, fixName(thisHostname)))
 			continue
 		}
 		cFile = append(cFile, fmt.Sprintf("%s=%s", k, th.Configs[k]))
@@ -114,7 +114,7 @@ ip link set $INTERFACE down`, v.Subnet, th.VpnAddress)
 			hostFile = append(hostFile,
 				fmt.Sprintf("Address=%s", address))
 		}
-		f.Hosts[host.Facts.Hostname] = strings.Join(hostFile, "\n")
+		f.Hosts[fixName(host.Facts.Hostname)] = strings.Join(hostFile, "\n")
 	}
 
 	return f
