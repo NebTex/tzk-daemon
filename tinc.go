@@ -111,7 +111,13 @@ ip link set $INTERFACE down`, v.Subnet, th.VpnAddress)
 		hostFile := []string{}
 		hostFile = append(hostFile,
 			fmt.Sprintf("Ed25519PublicKey=%s", host.Facts.PublicKey))
-		for address := range host.Facts.Addresses {
+		keys := make([]string, 0, len(host.Facts.Addresses))
+		for k := range host.Facts.Addresses {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+
+		for _, address := range keys {
 			hostFile = append(hostFile,
 				fmt.Sprintf("Address=%s", address))
 		}

@@ -121,6 +121,7 @@ func TestCompareFiles(t *testing.T) {
 					files1 = files
 				}
 				if count == 2 {
+
 					assert.True(g, files.Equal(files1))
 					files2 = files
 				}
