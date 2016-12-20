@@ -67,7 +67,7 @@ func (v *Vpn) GenerateFiles(thisHostname string) *Files {
 
 	th, ok := v.Hosts[thisHostname]
 	if !ok {
-		log.Fatal("This host is not defined on consul")
+		log.Error("This host is not defined on consul")
 		return nil
 	}
 
