@@ -4,6 +4,7 @@ import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -163,8 +164,19 @@ func (f *Files) Equal(f2 *Files) bool {
 }
 
 func saveMap(m map[string]string, folder string) error {
+	var permission os.FileMode
 	for k, v := range m {
-		err := ioutil.WriteFile(filepath.Join(folder, k), []byte(v), 0644)
+		switch k {
+		case "tinc.conf":
+			permission = 0640
+		case "tinc-up":
+			permission = 0755
+		case "tinc-down":
+			permission = 0755
+		default:
+			permission = 0644
+		}
+		err := ioutil.WriteFile(filepath.Join(folder, k), []byte(v), permission)
 		if err != nil {
 			return err
 		}
