@@ -61,11 +61,14 @@ Mode=router
 Name=node1`, files.Tinc["tinc.conf"])
 
 				assert.Equal(g, `Ed25519PublicKey=pubkey2
-Address=185.36.25.14`, files.Hosts["node2"])
+Address=185.36.25.14
+Subnet=10.1.0.0/16`, files.Hosts["node2"])
 				assert.Equal(g, `Ed25519PublicKey=pubkey3
-Address=108.36.25.14`, files.Hosts["node3"])
+Address=108.36.25.14
+Subnet=10.1.0.0/16`, files.Hosts["node3"])
 				assert.Equal(g, `Ed25519PublicKey=pubkey4
-Address=95.36.25.14`, files.Hosts["node4"])
+Address=95.36.25.14
+Subnet=10.1.0.0/16`, files.Hosts["node4"])
 				close()
 				done()
 			}
