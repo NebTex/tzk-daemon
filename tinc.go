@@ -18,7 +18,11 @@ func (f *Facts) GetTincInfo(c Config, Hostname func() (string, error)) {
 		log.Fatal(err)
 		return
 	}
-	pKey := string(data)
+	ss := strings.Split(string(data), "=")
+	if len(ss) < 2 {
+		log.Fatal("tinc public key has bad format")
+	}
+	pKey := strings.TrimSpace(ss[1])
 	if f.PublicKey != pKey {
 		f.HasChanged = true
 	}

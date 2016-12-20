@@ -29,7 +29,7 @@ func bootstrapConsul(subnet string, vpnName string, c Config) {
 		log.Fatal(err)
 	}
 	c.Vpn.PublicKeyFile = "/tmp/pubkey"
-	err = ioutil.WriteFile(c.Vpn.PublicKeyFile, []byte("pubkey"), 0755)
+	err = ioutil.WriteFile(c.Vpn.PublicKeyFile, []byte("pubkey = pubkey"), 0755)
 
 	checkFatal(err)
 
