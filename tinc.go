@@ -122,7 +122,7 @@ ip link set $INTERFACE down`, v.Subnet, th.VpnAddress)
 			hostFile = append(hostFile,
 				fmt.Sprintf("Address=%s", address))
 		}
-		hostFile = append(hostFile, fmt.Sprintf("Subnet=%s", v.Subnet))
+		hostFile = append(hostFile, fmt.Sprintf("Subnet=%s", host.VpnAddress))
 		f.Hosts[fixName(host.Facts.Hostname)] = strings.Join(hostFile, "\n")
 	}
 
