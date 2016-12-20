@@ -41,6 +41,9 @@ func TestGenerateFiles(t *testing.T) {
 			handle := func(v *Vpn, close func()) {
 				files := v.GenerateFiles("node1")
 				ip := DHCP(c, "node1")
+				ip2 := DHCP(c, "node2")
+				ip3 := DHCP(c, "node3")
+				ip4 := DHCP(c, "node4")
 
 				assert.Equal(g, fmt.Sprintf(`#!/bin/sh
 ip link set $INTERFACE up
@@ -60,15 +63,15 @@ MaxTimeout=300
 Mode=router
 Name=node1`, files.Tinc["tinc.conf"])
 
-				assert.Equal(g, `Ed25519PublicKey=pubkey2
+				assert.Equal(g, fmt.Sprintf(`Ed25519PublicKey=pubkey2
 Address=185.36.25.14
-Subnet=10.1.0.0/16`, files.Hosts["node2"])
-				assert.Equal(g, `Ed25519PublicKey=pubkey3
+Subnet=%s`, ip2), files.Hosts["node2"])
+				assert.Equal(g, fmt.Sprintf(`Ed25519PublicKey=pubkey3
 Address=108.36.25.14
-Subnet=10.1.0.0/16`, files.Hosts["node3"])
-				assert.Equal(g, `Ed25519PublicKey=pubkey4
+Subnet=%s`, ip3), files.Hosts["node3"])
+				assert.Equal(g, fmt.Sprintf(`Ed25519PublicKey=pubkey4
 Address=95.36.25.14
-Subnet=10.1.0.0/16`, files.Hosts["node4"])
+Subnet=%s`, ip4), files.Hosts["node4"])
 				close()
 				done()
 			}
