@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/criloz/goblin"
 	"github.com/stretchr/testify/assert"
 	"strings"
@@ -18,11 +19,13 @@ func TestParseToFileFormat(t *testing.T) {
 		g.It("should insert all the nodes in the host file",
 			func(done goblin.Done) {
 				handle := func(v *Vpn, close func()) {
-					o := v.Hosts.parseToFileFormat()
+					o := v.Hosts.parseToFileFormat(v.Hosts["node1"])
 					assert.True(g, strings.Contains(o, "node3.tzk.local"))
 					assert.True(g, strings.Contains(o, "node4.tzk.local"))
 					assert.True(g, strings.Contains(o, "node1.tzk.local"))
 					assert.True(g, strings.Contains(o, "node2.tzk.local"))
+					assert.True(g, strings.Contains(o, fmt.Sprintf("%s\tnode1", v.Hosts["node1"].VpnAddress)))
+
 					close()
 					done()
 				}
@@ -50,7 +53,7 @@ func TestManageHostBlock(t *testing.T) {
 		g.It("should insert or remplace the block in the host file",
 			func(done goblin.Done) {
 				handle := func(v *Vpn, close func()) {
-					o := v.Hosts.manageHostBlock("")
+					o := v.Hosts.manageHostBlock("", v.Hosts["node 1"])
 					assert.True(g, strings.Contains(o, "node3.tzk.local"))
 					assert.True(g, strings.Contains(o, "node4.tzk.local"))
 					assert.True(g, strings.Contains(o, "node1.tzk.local"))
@@ -61,7 +64,7 @@ func TestManageHostBlock(t *testing.T) {
                     10.65.1.23	node20.tzk.local
                     10.65.1.206	node30.tzk.local
                     10.65.1.248	node40.tzk.local
-                    #/tzk/NoEdit`)
+                    #/tzk/NoEdit`, v.Hosts["node 1"])
 					assert.True(g, strings.Contains(o, "node3.tzk.local"))
 					assert.True(g, strings.Contains(o, "node4.tzk.local"))
 					assert.True(g, strings.Contains(o, "node1.tzk.local"))

@@ -15,7 +15,7 @@ func init() {
 	log.SetFormatter(&log.TextFormatter{})
 }
 
-func initiate(c Config) Host {
+func initiate(c Config) *Host {
 	initSubnet(c)
 	h := Host{}
 	h.Facts.GetContainerStatus()
@@ -26,10 +26,10 @@ func initiate(c Config) Host {
 	h.SetConfigConsul(c)
 	DHCP(c, h.Facts.Hostname)
 	handleConsulChange(c, h)
-	return h
+	return &h
 }
 
-func mainLoop(c Config, h Host) {
+func mainLoop(c Config, h *Host) {
 	geoIPLimiter := 0
 
 	for {
@@ -56,7 +56,7 @@ func handleConsulChange(c Config, h Host) {
 			DHCP(c, h.Facts.Hostname)
 			subnet = v.Subnet
 		}
-		v.SetHostFile()
+		v.SetHostFile(h.Facts.Hostname)
 		files := v.GenerateFiles(h.Facts.Hostname)
 		if !files.Equal(oldFiles) {
 			files.Write(c)
