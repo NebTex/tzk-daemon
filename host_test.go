@@ -24,7 +24,8 @@ func TestParseToFileFormat(t *testing.T) {
 					assert.True(g, strings.Contains(o, "node4.tzk.local"))
 					assert.True(g, strings.Contains(o, "node1.tzk.local"))
 					assert.True(g, strings.Contains(o, "node2.tzk.local"))
-					assert.True(g, strings.Contains(o, fmt.Sprintf("%s\tnode1", v.Hosts["node1"].VpnAddress)))
+					assert.True(g, strings.Contains(o,
+						fmt.Sprintf("%s\tnode1", v.Hosts["node1"].VpnAddress)))
 
 					close()
 					done()
