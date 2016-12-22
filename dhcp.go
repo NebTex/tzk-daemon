@@ -11,7 +11,7 @@ import (
 )
 
 //DefaultSubnet the default cidr of the vpn
-const DefaultSubnet = "169.254.0.0/16"
+const DefaultSubnet = "10.187.0.0/16"
 
 func inc(ip net.IP) {
 	for j := len(ip) - 1; j >= 0; j-- {
