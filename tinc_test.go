@@ -48,9 +48,11 @@ func TestGenerateFiles(t *testing.T) {
 				assert.Equal(g, fmt.Sprintf(`#!/bin/sh
 ip link set $INTERFACE up
 ip addr add  %s dev $INTERFACE
-ip route add 10.1.0.0/16 dev $INTERFACE`, ip), files.Tinc["tinc-up"])
+ip route add 10.1.0.0/16 dev $INTERFACE
+ip route add 10.96.0.0/12 dev $INTERFACE`, ip), files.Tinc["tinc-up"])
 
 				assert.Equal(g, fmt.Sprintf(`#!/bin/sh
+ip route del 10.96.0.0/12 dev $INTERFACE
 ip route del 10.1.0.0/16 dev $INTERFACE
 ip addr del %s dev $INTERFACE
 ip link set $INTERFACE down`, ip), files.Tinc["tinc-down"])
