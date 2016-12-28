@@ -61,6 +61,7 @@ deployment:
   release:
     branch: master
     commands:
+    - export CGO_ENABLED=0
     - go get github.com/mitchellh/gox
     - go get github.com/tcnksm/ghr
     - "gox -parallel=1 -os=\"linux  windows\" -arch=\"amd64 arm arm64\" -ldflags
