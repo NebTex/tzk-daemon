@@ -1,14 +1,16 @@
 package main
 
 import (
-	"github.com/BurntSushi/toml"
-	log "github.com/Sirupsen/logrus"
-	"github.com/urfave/cli"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
+
+	"github.com/BurntSushi/toml"
+	log "github.com/Sirupsen/logrus"
+	"github.com/urfave/cli"
 )
 
 func init() {
@@ -61,8 +63,8 @@ func handleConsulChange(c Config, h Host) {
 		if !files.Equal(oldFiles) {
 			files.Write(c)
 			oldFiles = files
-			unit := "tinc"
-			_, err := exec.Command("/bin/systemctl", "restart", unit).Output()
+			cmd := strings.Split(c.Vpn.ExecStart, " ")
+			_, err := exec.Command(cmd[0], cmd[1:]...).Output()
 			log.Error(err)
 		}
 	})

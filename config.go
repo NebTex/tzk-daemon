@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/hashicorp/consul/api"
 )
@@ -18,6 +19,7 @@ type Config struct {
 	Vpn struct {
 		Name          string
 		PublicKeyFile string
+		ExecStart     string //command that should be called for restart tinc
 	}
 	Consul struct {
 		Address string
