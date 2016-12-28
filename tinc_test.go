@@ -133,7 +133,7 @@ func TestCompareFiles(t *testing.T) {
 				}
 				if count == 2 {
 
-					assert.True(g, files.Equal(files1))
+					assert.False(g, files.Equal(files1))
 					files2 = files
 				}
 
@@ -151,7 +151,8 @@ func TestCompareFiles(t *testing.T) {
 			go WatchConsul(c, handle)
 			time.Sleep(1 * time.Second)
 			_, err := client.KV().
-				Put(&api.KVPair{Key: "tzk/Subnet", Value: []byte("10.1.0.0/16")}, nil)
+				Put(&api.KVPair{Key: "tzk/Hosts/node1/Facts/PublicKey",
+					Value: []byte("xxxxxxxx")}, nil)
 			checkFail(g, err)
 			time.Sleep(1 * time.Second)
 			addHost(c, "node5", "pubkey5", "95.36.25.14")
