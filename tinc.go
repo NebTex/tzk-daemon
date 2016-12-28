@@ -55,39 +55,45 @@ type Dumps struct {
 
 //Get the dump commands output
 func (d *Dumps) Get(c Config) {
-	out, err := exec.Command("tinc", "-n", c.Vpn.Name, "dump", "nodes").Output()
+	out, err := exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
+		"dump", "nodes").Output()
 	if err != nil {
 		log.Error(err)
 	}
 	d.Nodes = out
 
-	out, err = exec.Command("tinc", "-n", c.Vpn.Name, "dump", "edges").Output()
+	out, err = exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
+		"dump", "edges").Output()
 	if err != nil {
 		log.Error(err)
 	}
 	d.Edges = out
 
-	out, err = exec.Command("tinc", "-n", c.Vpn.Name, "dump", "subnets").
+	out, err = exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
+		"dump", "subnets").
 		Output()
 	if err != nil {
 		log.Error(err)
 	}
 	d.Subnets = out
 
-	out, err = exec.Command("tinc", "-n", c.Vpn.Name, "dump", "connections").
+	out, err = exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
+		"dump", "connections").
 		Output()
 	if err != nil {
 		log.Error(err)
 	}
 	d.Connections = out
 
-	out, err = exec.Command("tinc", "-n", c.Vpn.Name, "dump", "graph").Output()
+	out, err = exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
+		"dump", "graph").Output()
 	if err != nil {
 		log.Error(err)
 	}
 	d.Graph = out
 
-	out, err = exec.Command("tinc", "-n", c.Vpn.Name, "dump", "invitations").
+	out, err = exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
+		"dump", "invitations").
 		Output()
 	if err != nil {
 		log.Error(err)

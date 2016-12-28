@@ -21,7 +21,7 @@ func init() {
 func initiate(c Config) *Host {
 	initSubnet(c)
 	h := Host{}
-	h.Facts.GetContainerStatus()
+	h.Dumps = &Dumps{}
 	h.Facts.GetLocalAddresses()
 	h.Facts.GetGeoIP()
 	h.Facts.GetTincInfo(c, os.Hostname)
