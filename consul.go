@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/hashicorp/consul/api"
 	"github.com/mitchellh/consulstructure"
-	"strconv"
 )
 
 func toByte(value interface{}) []byte {
@@ -75,6 +76,31 @@ func (f *Facts) SendToConsul(c Config) {
 		return
 	}
 	f.HasChanged = false
+}
+
+func (h *Host) addDumpKey(k string, v []byte) *api.KVTxnOp {
+	return &api.KVTxnOp{Verb: "set",
+		Key:   fmt.Sprintf("tzk/Hosts/%s/Dumps/%s", h.Facts.Hostname, k),
+		Value: v}
+}
+
+//SendDumpsToConsul save dumps in consul
+func (h *Host) SendDumpsToConsul(c Config) {
+
+	ctx := api.KVTxnOps{h.addDumpKey("Nodes", h.Dumps.Nodes),
+		h.addDumpKey("Connections", h.Dumps.Connections),
+		h.addDumpKey("Subnets", h.Dumps.Subnets),
+		h.addDumpKey("Edges", h.Dumps.Edges),
+		h.addDumpKey("Graph", h.Dumps.Graph),
+		h.addDumpKey("Invitations", h.Dumps.Invitations)}
+
+	client := getConsulClient(c)
+	ok, _, _, err := client.KV().Txn(ctx, nil)
+	if err != nil || !ok {
+		log.Error("Dump: Failed to make a request to the consul service")
+		log.Fatal(err)
+		return
+	}
 }
 
 //WatchConsul watch  consul for changes in the vpn info

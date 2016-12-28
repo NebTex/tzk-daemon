@@ -8,6 +8,8 @@ import (
 	"sort"
 	"strings"
 
+	"os/exec"
+
 	log "github.com/Sirupsen/logrus"
 )
 
@@ -41,11 +43,64 @@ func (f *Facts) GetTincInfo(c Config, Hostname func() (string, error)) {
 	f.Hostname = hn
 }
 
+//Dumps contain the results of tinc dump commands
+type Dumps struct {
+	Nodes       []byte
+	Edges       []byte
+	Subnets     []byte
+	Connections []byte
+	Graph       []byte
+	Invitations []byte
+}
+
+//Get the dump commands output
+func (d *Dumps) Get(c Config) {
+	out, err := exec.Command("tinc", "-n", c.Vpn.Name, "dump", "nodes").Output()
+	if err != nil {
+		log.Error(err)
+	}
+	d.Nodes = out
+
+	out, err = exec.Command("tinc", "-n", c.Vpn.Name, "dump", "edges").Output()
+	if err != nil {
+		log.Error(err)
+	}
+	d.Edges = out
+
+	out, err = exec.Command("tinc", "-n", c.Vpn.Name, "dump", "subnets").
+		Output()
+	if err != nil {
+		log.Error(err)
+	}
+	d.Subnets = out
+
+	out, err = exec.Command("tinc", "-n", c.Vpn.Name, "dump", "connections").
+		Output()
+	if err != nil {
+		log.Error(err)
+	}
+	d.Connections = out
+
+	out, err = exec.Command("tinc", "-n", c.Vpn.Name, "dump", "graph").Output()
+	if err != nil {
+		log.Error(err)
+	}
+	d.Graph = out
+
+	out, err = exec.Command("tinc", "-n", c.Vpn.Name, "dump", "invitations").
+		Output()
+	if err != nil {
+		log.Error(err)
+	}
+	d.Invitations = out
+}
+
 //Host contain all the node info
 type Host struct {
 	VpnAddress string
 	Facts      Facts
 	Configs    map[string]string
+	Dumps      *Dumps
 }
 
 //Hosts list of Host

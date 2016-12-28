@@ -49,6 +49,8 @@ func mainLoop(c Config, h *Host) {
 			geoIPLimiter = 0
 		}
 		time.Sleep(60 * time.Second)
+		h.Dumps.Get(c)
+		h.SendDumpsToConsul(c)
 	}
 }
 func handleConsulChange(c Config, h Host) {
