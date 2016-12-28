@@ -19,12 +19,16 @@ type Config struct {
 	Vpn struct {
 		Name          string
 		PublicKeyFile string
+		Subnet        string
 		ExecStart     string //command that should be called for restart tinc
 	}
 	Consul struct {
 		Address string
 		Token   string
 		Scheme  string
+	}
+	Kubernetes struct {
+		ServiceCIDR string
 	}
 }
 

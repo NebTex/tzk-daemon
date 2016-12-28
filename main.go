@@ -59,7 +59,7 @@ func handleConsulChange(c Config, h Host) {
 			subnet = v.Subnet
 		}
 		v.SetHostFile(h.Facts.Hostname)
-		files := v.GenerateFiles(h.Facts.Hostname)
+		files := v.GenerateFiles(h.Facts.Hostname, c)
 		if !files.Equal(oldFiles) {
 			files.Write(c)
 			oldFiles = files

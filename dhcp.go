@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/hashicorp/consul/api"
 	"math/rand"
 	"net"
 	"runtime"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/hashicorp/consul/api"
 )
 
 //DefaultSubnet the default cidr of the vpn
@@ -74,7 +75,8 @@ func assignIP(client *api.Client, c Config, hostname string) string {
 		checkFatal(err)
 		if kv != nil {
 			if string(kv.Value) == hostname {
-				sKv, _, err := client.KV().
+				return *ci
+				/*sKv, _, err := client.KV().
 					Get(fmt.Sprintf("%s/Subnet", c.Vpn.Name), nil)
 
 				checkFatal(err)
@@ -91,7 +93,7 @@ func assignIP(client *api.Client, c Config, hostname string) string {
 				// delete taken ip
 				_, err = client.KV().
 					Delete(fmt.Sprintf("%s/TakenAddresses/%s", c.Vpn.Name, *ci), nil)
-				checkFatal(err)
+				checkFatal(err)*/
 
 			}
 		}
@@ -169,9 +171,13 @@ func initSubnet(c Config) {
 	client := getConsulClient(c)
 	kv, _, err := client.KV().Get(fmt.Sprintf("%s/Subnet", c.Vpn.Name), nil)
 	checkFatal(err)
+	s := DefaultSubnet
+	if c.Vpn.Subnet != "" {
+		s = c.Vpn.Subnet
+	}
 	if kv == nil {
 		kv = &api.KVPair{Key: fmt.Sprintf("%s/Subnet", c.Vpn.Name),
-			Value: []byte(DefaultSubnet)}
+			Value: []byte(s)}
 		_, err = client.KV().Put(kv, nil)
 		checkFatal(err)
 

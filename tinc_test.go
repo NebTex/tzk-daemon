@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/criloz/goblin"
-	"github.com/hashicorp/consul/api"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/criloz/goblin"
+	"github.com/hashicorp/consul/api"
+	"github.com/stretchr/testify/assert"
 )
 
 func addHost(c Config, hostname string, pubkey string, addresses ...string) {
@@ -34,12 +35,13 @@ func TestGenerateFiles(t *testing.T) {
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
 	c.Vpn.Name = "tzk"
+	c.Kubernetes.ServiceCIDR = "10.96.0.0/12"
 
 	g.Describe("GenerateFiles", func() {
 		g.It("Should generate the files need to run tinc", func(done goblin.Done) {
 			g.Timeout(60 * time.Second)
 			handle := func(v *Vpn, close func()) {
-				files := v.GenerateFiles("node1")
+				files := v.GenerateFiles("node1", c)
 				ip := DHCP(c, "node1")
 				ip2 := DHCP(c, "node2")
 				ip3 := DHCP(c, "node3")
@@ -94,6 +96,7 @@ func TestCompareFiles(t *testing.T) {
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
 	c.Vpn.Name = "tzk"
+	c.Kubernetes.ServiceCIDR = "10.96.0.0/12"
 
 	client := getConsulClient(c)
 
@@ -101,7 +104,7 @@ func TestCompareFiles(t *testing.T) {
 		g.It("Should return true with the same inputs ", func(done goblin.Done) {
 			g.Timeout(15 * time.Second)
 			handle := func(v *Vpn, close func()) {
-				files := v.GenerateFiles("node1")
+				files := v.GenerateFiles("node1", c)
 				assert.True(g, files.Equal(files))
 				assert.True(g, files.Equal(files))
 				assert.True(g, files.Equal(files))
@@ -123,7 +126,7 @@ func TestCompareFiles(t *testing.T) {
 			var files1, files2 *Files
 			handle := func(v *Vpn, close func()) {
 				count++
-				files := v.GenerateFiles("node1")
+				files := v.GenerateFiles("node1", c)
 				if count == 1 {
 					assert.True(g, files.Equal(files))
 					files1 = files

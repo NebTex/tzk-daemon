@@ -11,12 +11,10 @@ Small tool for coordinate mesh vpns (initially tinc) using consul as backend
      - Check if the node is a bare-metal or lxc container
      - Tinc public key of the node
  
- 2. Automatically assign an ip to the node, if there is a subnet change, automatically  reassign a new ip to the node
- 
- 3. Maintain updated the `/etc/hosts` file, with a entry for each node, 
+ 2. Maintain updated the `/etc/hosts` file, with a entry for each node, 
  with its respective vpn address 
  
- 4. Write and maintain updated the tinc files, `tinc.conf`, `tinc-down`, `tinc-up` and the node-hosts files
+ 3. Write and maintain updated the tinc files, `tinc.conf`, `tinc-down`, `tinc-up` and the node-hosts files
  
 ### Vendoring 
 

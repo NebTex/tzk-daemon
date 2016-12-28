@@ -2,16 +2,17 @@ package main
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/criloz/goblin"
-	"github.com/hashicorp/consul/api"
-	"github.com/satori/go.uuid"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net"
 	"strings"
 	"testing"
 	"time"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/criloz/goblin"
+	"github.com/hashicorp/consul/api"
+	"github.com/satori/go.uuid"
+	"github.com/stretchr/testify/assert"
 )
 
 func bootstrapConsul(subnet string, vpnName string, c Config) {
@@ -149,7 +150,7 @@ func TestDHCPChangeSubnet(t *testing.T) {
 	client := getConsulClient(c)
 
 	g.Describe("DHCP", func() {
-		g.It("Should change ip if the subnet changed", func() {
+		g.It("Should not change ip if the subnet changed", func() {
 			g.Timeout(30 * time.Second)
 			subnet1 := "10.65.1.0/24"
 			subnet2 := "10.1.0.0/16"
@@ -165,14 +166,10 @@ func TestDHCPChangeSubnet(t *testing.T) {
 			checkFail(g, err)
 			DHCP(c, "node1")
 			newIP2 := DHCP(c, "node1")
-			assert.NotEqual(g, newIP2, newIP1)
-			assert.True(g, ipNet2.Contains(net.ParseIP(newIP2)))
+			assert.Equal(g, newIP2, newIP1)
+			assert.False(g, ipNet2.Contains(net.ParseIP(newIP2)))
 			kv, _, err := client.KV().
 				Get(fmt.Sprintf("tzk/TakenAddresses/%s", newIP1), nil)
-			checkFail(g, err)
-			assert.Nil(g, kv)
-			kv, _, err = client.KV().
-				Get(fmt.Sprintf("tzk/TakenAddresses/%s", newIP2), nil)
 			checkFail(g, err)
 			assert.NotNil(g, kv)
 
@@ -191,7 +188,7 @@ func TestInitSubnet(t *testing.T) {
 	client := getConsulClient(c)
 
 	g.Describe("initSubnet", func() {
-		g.It("Should assing the default subnet", func() {
+		g.It("Should assign the default subnet", func() {
 			_, err := client.KV().DeleteTree(c.Vpn.Name, nil)
 			if err != nil {
 				log.Fatal(err)

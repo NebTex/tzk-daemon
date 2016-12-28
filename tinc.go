@@ -66,7 +66,7 @@ type Files struct {
 
 //GenerateFiles create the tinc conf files,
 // and host files from the Vpn struct
-func (v *Vpn) GenerateFiles(thisHostname string) *Files {
+func (v *Vpn) GenerateFiles(thisHostname string, c Config) *Files {
 	log.Infof("Generating files for %s", thisHostname)
 	f := &Files{}
 	f.Hosts = make(map[string]string)
@@ -83,14 +83,15 @@ func (v *Vpn) GenerateFiles(thisHostname string) *Files {
 ip link set $INTERFACE up
 ip addr add  %s dev $INTERFACE
 ip route add %s dev $INTERFACE
-ip route add 10.96.0.0/12 dev $INTERFACE`, th.VpnAddress, v.Subnet)
+ip route add %s dev $INTERFACE`, th.VpnAddress, v.Subnet,
+		c.Kubernetes.ServiceCIDR)
 
 	// create tinc down
 	f.Tinc["tinc-down"] = fmt.Sprintf(`#!/bin/sh
-ip route del 10.96.0.0/12 dev $INTERFACE
+ip route del %s dev $INTERFACE
 ip route del %s dev $INTERFACE
 ip addr del %s dev $INTERFACE
-ip link set $INTERFACE down`, v.Subnet, th.VpnAddress)
+ip link set $INTERFACE down`, c.Kubernetes.ServiceCIDR, v.Subnet, th.VpnAddress)
 
 	cFile := []string{}
 	keys := make([]string, 0, len(th.Configs)+1)
