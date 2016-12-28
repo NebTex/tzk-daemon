@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 //GetTincInfo get hostname and public key of the node
@@ -194,7 +195,18 @@ func (f *Files) Write(c Config) {
 		log.Error("Could not save the tinc config files")
 		log.Fatal(err)
 	}
-	err = saveMap(f.Hosts, fmt.Sprintf("/etc/tinc/%s/hosts/", c.Vpn.Name))
+	hosts := fmt.Sprintf("/etc/tinc/%s/hosts/", c.Vpn.Name)
+	err = os.RemoveAll(hosts)
+	if err != nil {
+		log.Error("Failed to remove hosts files")
+		log.Fatal(err)
+	}
+	err = os.MkdirAll(hosts, 644)
+	if err != nil {
+		log.Error("Failed to create hosts path")
+		log.Fatal(err)
+	}
+	err = saveMap(f.Hosts, hosts)
 	if err != nil {
 		log.Error("Could not save the hosts  files")
 		log.Fatal(err)
