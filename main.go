@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -81,6 +82,10 @@ func main() {
 			Value: "/etc/tzk",
 			Usage: "config directory",
 		},
+		cli.BoolFlag{
+			Name:  "dhcp",
+			Usage: "print the node vpn ip",
+		},
 	}
 
 	app.Action = func(c *cli.Context) error {
@@ -93,11 +98,19 @@ func main() {
 		if _, err := toml.Decode(string(data), &config); err != nil {
 			log.Fatal(err)
 		}
+		if c.Bool("dhcp") {
+			h, err := os.Hostname()
+			if err != nil {
+				log.Fatal(err)
+			}
+			nodeIP := DHCP(config, h)
+			fmt.Print(nodeIP)
+			return nil
+		}
 		mainLoop(config, initiate(config))
 		return nil
 	}
 
 	err := app.Run(os.Args)
 	checkFatal(err)
-
 }
