@@ -45,12 +45,12 @@ func (f *Facts) GetTincInfo(c Config, Hostname func() (string, error)) {
 
 //Dumps contain the results of tinc dump commands
 type Dumps struct {
-	Nodes       []byte
-	Edges       []byte
-	Subnets     []byte
-	Connections []byte
-	Graph       []byte
-	Invitations []byte
+	Nodes       string
+	Edges       string
+	Subnets     string
+	Connections string
+	Graph       string
+	Invitations string
 }
 
 //Get the dump commands output
@@ -63,14 +63,14 @@ func (d *Dumps) Get(c Config) {
 	if err != nil {
 		log.Error(err)
 	}
-	d.Nodes = out
+	d.Nodes = string(out)
 
 	out, err = exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
 		"dump", "edges").Output()
 	if err != nil {
 		log.Error(err)
 	}
-	d.Edges = out
+	d.Edges = string(out)
 
 	out, err = exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
 		"dump", "subnets").
@@ -78,7 +78,7 @@ func (d *Dumps) Get(c Config) {
 	if err != nil {
 		log.Error(err)
 	}
-	d.Subnets = out
+	d.Subnets = string(out)
 
 	out, err = exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
 		"dump", "connections").
@@ -86,14 +86,14 @@ func (d *Dumps) Get(c Config) {
 	if err != nil {
 		log.Error(err)
 	}
-	d.Connections = out
+	d.Connections = string(out)
 
 	out, err = exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
 		"dump", "graph").Output()
 	if err != nil {
 		log.Error(err)
 	}
-	d.Graph = out
+	d.Graph = string(out)
 
 	out, err = exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
 		"dump", "invitations").
@@ -101,7 +101,7 @@ func (d *Dumps) Get(c Config) {
 	if err != nil {
 		log.Error(err)
 	}
-	d.Invitations = out
+	d.Invitations = string(out)
 }
 
 //Host contain all the node info

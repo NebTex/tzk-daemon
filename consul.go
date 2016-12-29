@@ -78,10 +78,10 @@ func (f *Facts) SendToConsul(c Config) {
 	f.HasChanged = false
 }
 
-func (h *Host) addDumpKey(k string, v []byte) *api.KVTxnOp {
+func (h *Host) addDumpKey(k string, v string) *api.KVTxnOp {
 	return &api.KVTxnOp{Verb: "set",
 		Key:   fmt.Sprintf("tzk/Hosts/%s/Dumps/%s", h.Facts.Hostname, k),
-		Value: v}
+		Value: []byte(v)}
 }
 
 //SendDumpsToConsul save dumps in consul
