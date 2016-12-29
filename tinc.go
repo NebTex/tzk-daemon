@@ -55,6 +55,9 @@ type Dumps struct {
 
 //Get the dump commands output
 func (d *Dumps) Get(c Config) {
+	if d == nil {
+		d = &Dumps{}
+	}
 	out, err := exec.Command("/usr/sbin/tinc", "-n", c.Vpn.Name,
 		"dump", "nodes").Output()
 	if err != nil {
