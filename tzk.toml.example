@@ -3,11 +3,9 @@ Name = "tzk"
 PublicKeyFile = "/etc/tinc/tzk/pub.key"
 ExecStart = "supervisorctl restart tinc"
 Subnet = "10.187.0.0/16"
+NodeIP = ""
 
 [Consul]
 Address = "127.0.0.1:8500"
 Scheme = "http"
 ACLToken = "ACLToken"
-
-[Kubernetes]
-ServiceCIDR = "10.96.0.0/12"

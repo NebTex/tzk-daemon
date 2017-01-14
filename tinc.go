@@ -146,16 +146,13 @@ func (v *Vpn) GenerateFiles(thisHostname string, c Config) *Files {
 	f.Tinc["tinc-up"] = fmt.Sprintf(`#!/bin/sh
 ip link set $INTERFACE up
 ip addr add  %s dev $INTERFACE
-ip route add %s dev $INTERFACE
-ip route add %s dev $INTERFACE`, th.VpnAddress, v.Subnet,
-		c.Kubernetes.ServiceCIDR)
+ip route add %s dev $INTERFACE`, th.VpnAddress, v.Subnet)
 
 	// create tinc down
 	f.Tinc["tinc-down"] = fmt.Sprintf(`#!/bin/sh
 ip route del %s dev $INTERFACE
-ip route del %s dev $INTERFACE
 ip addr del %s dev $INTERFACE
-ip link set $INTERFACE down`, c.Kubernetes.ServiceCIDR, v.Subnet, th.VpnAddress)
+ip link set $INTERFACE down`, v.Subnet, th.VpnAddress)
 
 	cFile := []string{}
 	keys := make([]string, 0, len(th.Configs)+1)

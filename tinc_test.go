@@ -35,8 +35,7 @@ func TestGenerateFiles(t *testing.T) {
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
 	c.Vpn.Name = "tzk"
-	c.Kubernetes.ServiceCIDR = "10.96.0.0/12"
-
+    
 	g.Describe("GenerateFiles", func() {
 		g.It("Should generate the files need to run tinc", func(done goblin.Done) {
 			g.Timeout(60 * time.Second)
@@ -50,11 +49,9 @@ func TestGenerateFiles(t *testing.T) {
 				assert.Equal(g, fmt.Sprintf(`#!/bin/sh
 ip link set $INTERFACE up
 ip addr add  %s dev $INTERFACE
-ip route add 10.1.0.0/16 dev $INTERFACE
-ip route add 10.96.0.0/12 dev $INTERFACE`, ip), files.Tinc["tinc-up"])
+ip route add 10.1.0.0/16 dev $INTERFACE`, ip), files.Tinc["tinc-up"])
 
 				assert.Equal(g, fmt.Sprintf(`#!/bin/sh
-ip route del 10.96.0.0/12 dev $INTERFACE
 ip route del 10.1.0.0/16 dev $INTERFACE
 ip addr del %s dev $INTERFACE
 ip link set $INTERFACE down`, ip), files.Tinc["tinc-down"])
@@ -96,7 +93,6 @@ func TestCompareFiles(t *testing.T) {
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
 	c.Vpn.Name = "tzk"
-	c.Kubernetes.ServiceCIDR = "10.96.0.0/12"
 
 	client := getConsulClient(c)
 
