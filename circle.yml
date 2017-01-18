@@ -67,4 +67,4 @@ deployment:
     - "gox -parallel=1 -os=\"linux  windows\" -arch=\"amd64 arm arm64\" -ldflags
     \"-X main.Version=$BUILD_VERSION
     -X main.BuildDate=$BUILD_DATE\" -output \"dist/tzkd_{{.OS}}_{{.Arch}}\""
-    - "ghr -u NebTex -replace v0.1.1 dist/"
+    - "ghr -u NebTex -replace v0.2.0 dist/"

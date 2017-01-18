@@ -1,9 +1,13 @@
 [Vpn]
 Name = "tzk"
 PublicKeyFile = "/etc/tinc/tzk/pub.key"
-ExecStart = "supervisorctl restart tinc"
+ExecStop = "tinc --pidfile=/etc/tinc/tzk/pid pid stop"
+ExecStart = "/usr/sbin/tincd -n tzk --pidfile=/etc/tinc/tzk/pid --logfile=/etc/tinc/tzk/tzk.logs"
 Subnet = "10.187.0.0/16"
 NodeIP = ""
+ClusterCIDR = "10.32.0.0/16"
+# pick a PodSubnet in each host if you want to pick them manually in other
+PodSubnet = ""
 
 [Consul]
 Address = "127.0.0.1:8500"
