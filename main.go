@@ -30,7 +30,7 @@ func initiate(c commons.Config) *commons.Host {
     h.Facts.GetTincInfo(c, os.Hostname)
     h.Facts.SendToConsul(c)
     h.SetConfigConsul(c)
-    ip, s:= dhcp.DHCP(c, h.Facts.Hostname)
+    ip, s := dhcp.DHCP(c, h.Facts.Hostname)
     h.VpnAddress = ip
     h.PodSubnet = s
     handleConsulChange(c, h)
@@ -97,9 +97,9 @@ func getConfig(context *cli.Context) commons.Config {
     }
     return config
 }
-func getIP(config commons.Config){
-    host := initiate(config)
-    fmt.Print(host.VpnAddress)
+func getIP(config commons.Config) {
+    ip, _ := dhcp.DHCP(config, os.Hostname())
+    fmt.Print(ip)
 }
 
 func main() {
@@ -146,23 +146,23 @@ func main() {
                     Aliases: []string{},
                     Action: func(c *cli.Context) error {
                         log.SetLevel(log.ErrorLevel)
-    
+                        
                         config := getConfig(c)
-                        host := initiate(config)
-                        ip, _, err := net.ParseCIDR(host.PodSubnet)
+                        _, PodSubnet := dhcp.DHCP(config, os.Hostname())
+                        ip, _, err := net.ParseCIDR(PodSubnet)
                         commons.CheckFatal(err)
                         ip[len(ip) - 1]++
                         fmt.Print(ip.String() + "/24")
                         return nil
                     }},
                 {Name:  "ip",
-                Usage: "ip for this host",
-                Aliases: []string{},
-                Action: func(c *cli.Context) error {
-                    log.SetLevel(log.ErrorLevel)
-                    getIP(getConfig(c))
-                    return nil
-                }}}}}
+                    Usage: "ip for this host",
+                    Aliases: []string{},
+                    Action: func(c *cli.Context) error {
+                        log.SetLevel(log.ErrorLevel)
+                        getIP(getConfig(c))
+                        return nil
+                    }}}}}
     err := app.Run(os.Args)
     commons.CheckFatal(err)
 }
