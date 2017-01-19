@@ -98,7 +98,9 @@ func getConfig(context *cli.Context) commons.Config {
     return config
 }
 func getIP(config commons.Config) {
-    ip, _ := dhcp.DHCP(config, os.Hostname())
+    h, err:=os.Hostname()
+    commons.CheckFatal(err)
+    ip, _ := dhcp.DHCP(config, h)
     fmt.Print(ip)
 }
 
@@ -148,7 +150,9 @@ func main() {
                         log.SetLevel(log.ErrorLevel)
                         
                         config := getConfig(c)
-                        _, PodSubnet := dhcp.DHCP(config, os.Hostname())
+                        h, err:=os.Hostname()
+                        commons.CheckFatal(err)
+                        _, PodSubnet := dhcp.DHCP(config, h)
                         ip, _, err := net.ParseCIDR(PodSubnet)
                         commons.CheckFatal(err)
                         ip[len(ip) - 1]++
