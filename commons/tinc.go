@@ -11,10 +11,7 @@ func (f *Facts) GetTincInfo(c Config, Hostname func() (string, error)) {
 	// get public key
 	publicKeyPath := c.Vpn.PublicKeyFile
 	data, err := ioutil.ReadFile(publicKeyPath)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	CheckFatal(err)
 	ss := strings.Split(string(data), "=")
 	if len(ss) < 2 {
 		log.Fatal("tinc public key has bad format")

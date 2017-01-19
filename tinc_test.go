@@ -111,6 +111,7 @@ func TestCompareFiles(t *testing.T) {
 	c.Consul.Address = "localhost:8500"
 	c.Consul.Scheme = "http"
 	c.Vpn.Name = "tzk"
+    
 
 	client := commons.GetConsulClient(c)
 

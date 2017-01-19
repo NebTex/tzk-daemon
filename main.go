@@ -30,7 +30,9 @@ func initiate(c commons.Config) *commons.Host {
     h.Facts.GetTincInfo(c, os.Hostname)
     h.Facts.SendToConsul(c)
     h.SetConfigConsul(c)
-    dhcp.DHCP(c, h.Facts.Hostname)
+    ip, s:= dhcp.DHCP(c, h.Facts.Hostname)
+    h.VpnAddress = ip
+    h.PodSubnet = s
     handleConsulChange(c, h)
     return &h
 }
@@ -95,12 +97,16 @@ func getConfig(context *cli.Context) commons.Config {
     }
     return config
 }
+func getIP(config commons.Config){
+    host := initiate(config)
+    fmt.Print(host.VpnAddress)
+}
 
 func main() {
     app := cli.NewApp()
     app.Description = "Gather some fact about the node and send it " +
         "to the master"
-    app.Version = "0.3"
+    app.Version = "0.2.0"
     
     app.Flags = []cli.Flag{
         cli.StringFlag{
@@ -130,7 +136,7 @@ func main() {
                         logs := filepath.Join("/etc/tinc/tzk", "tinc.logs")
                         data, err := ioutil.ReadFile(logs)
                         commons.CheckFatal(err)
-                        fmt.Print(data)
+                        fmt.Print(string(data))
                         return nil
                     },
                 },
@@ -139,6 +145,8 @@ func main() {
                     Usage: "podSubnet for this host",
                     Aliases: []string{},
                     Action: func(c *cli.Context) error {
+                        log.SetLevel(log.ErrorLevel)
+    
                         config := getConfig(c)
                         host := initiate(config)
                         ip, _, err := net.ParseCIDR(host.PodSubnet)
@@ -151,9 +159,8 @@ func main() {
                 Usage: "ip for this host",
                 Aliases: []string{},
                 Action: func(c *cli.Context) error {
-                    config := getConfig(c)
-                    host := initiate(config)
-                    fmt.Print(host.VpnAddress)
+                    log.SetLevel(log.ErrorLevel)
+                    getIP(getConfig(c))
                     return nil
                 }}}}}
     err := app.Run(os.Args)
