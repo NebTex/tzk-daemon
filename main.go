@@ -73,7 +73,7 @@ func handleConsulChange(c commons.Config, h commons.Host) {
             _, err := exec.Command(stopCMD[0], stopCMD[1:]...).Output()
             if err != nil {
                 log.Error("Failed to stop tinc")
-                log.Fatal(err)
+                log.Error(err)
             }
             files.Write(c)
             oldFiles = files
@@ -81,7 +81,7 @@ func handleConsulChange(c commons.Config, h commons.Host) {
             _, err = exec.Command(startCMD[0], startCMD[1:]...).Output()
             if err != nil {
                 log.Error("Failed to start tinc")
-                log.Fatal(err)
+                log.Error(err)
             }
         }
     })
